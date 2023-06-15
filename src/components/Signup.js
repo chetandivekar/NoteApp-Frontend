@@ -6,11 +6,18 @@ export default function Signup(props) {
     name: "",
     email: "",
     password: "",
+    cpassword: "",
   });
   let navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (credentials.password !== credentials.cpassword) {
+      props.showAlert("Passwords do not match", "danger");
+      return;
+    }
+
     const response = await fetch("http://localhost:5000/api/auth/createUser", {
       method: "POST",
       headers: {
@@ -30,13 +37,14 @@ export default function Signup(props) {
       navigate("/");
       props.showAlert("Logged in successfully", "success");
     } else {
-      props.showAlert("Invalid Crecentials", "danger");
+      props.showAlert("Invalid Credentials", "danger");
     }
   };
 
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -86,7 +94,7 @@ export default function Signup(props) {
         </div>
         <div className="mb-3">
           <label htmlFor="cpassword" className="form-label">
-            Cofirm Password
+            Confirm Password
           </label>
           <input
             type="password"
