@@ -3,12 +3,21 @@ import noteContext from "../contexts/notes/noteContext";
 
 export default function Addnote() {
   const notes = useContext(noteContext);
-  const [note, setNote] = useState({ title: "", description: "", tag: "" });
+  const [note, setNote] = useState({
+    title: "",
+    description: "",
+    tag: "",
+  });
   const { addNote } = notes;
 
   const handleClick = (e) => {
     e.preventDefault();
-    addNote(note);
+    setNote({
+      title: "",
+      description: "",
+      tag: "",
+    });
+    addNote(note.title, note.description, note.tag);
   };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -27,6 +36,7 @@ export default function Addnote() {
               type="text"
               onChange={onChange}
               className="form-control"
+              value={note.title}
               id="title"
               name="title"
             />
@@ -39,11 +49,26 @@ export default function Addnote() {
               type="text"
               onChange={onChange}
               className="form-control"
+              value={note.description}
               id="description"
               name="description"
             />
           </div>
+          <div className="mb-3">
+            <label htmlFor="tag" className="form-label">
+              Tag
+            </label>
+            <input
+              type="text"
+              onChange={onChange}
+              className="form-control"
+              value={note.tag}
+              id="description"
+              name="tag"
+            />
+          </div>
           <button
+            disabled={note.title.length < 5 || note.description.length < 5}
             type="submit"
             onClick={handleClick}
             className="btn btn-primary"
