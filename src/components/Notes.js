@@ -2,17 +2,32 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../contexts/notes/noteContext";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
+import { useNavigate } from "react-router-dom";
 
-export default function Notes() {
+export default function Notes(props) {
+  const navigate = useNavigate();
+  const { showAlert } = props;
   const notes = useContext(noteContext);
   const { note, getAllNotes, editNote } = notes;
   useEffect(() => {
-    getAllNotes();
+    const token = localStorage.getItem("token");
+    if (token) {
+      getAllNotes();
+      console.log(token);
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line
   }, []);
 
   const ref = useRef(null);
   const refClose = useRef(null);
+  const [note1, setNote] = useState({
+    id: "",
+    etitle: "",
+    edescription: "",
+    etag: "",
+  });
 
   const updateNote = (currentNote) => {
     ref.current.click();
@@ -23,16 +38,12 @@ export default function Notes() {
       etag: currentNote.tag,
     });
   };
-  const [note1, setNote] = useState({
-    etitle: "",
-    edescription: "",
-    etag: "Default",
-  });
 
   const handleClick = (e) => {
     e.preventDefault();
     editNote(note1.id, note1.etitle, note1.edescription, note1.etag);
     refClose.current.click();
+    showAlert("Note Updated Successfully", "success");
   };
   const onChange = (e) => {
     setNote({ ...note1, [e.target.name]: e.target.value });
@@ -40,7 +51,7 @@ export default function Notes() {
 
   return (
     <>
-      <Addnote />
+      <Addnote showAlert={showAlert} />
       <button
         style={{ display: "none" }}
         ref={ref}
@@ -150,7 +161,14 @@ export default function Notes() {
           {note.length === 0 && "No Note to display(Add note to display here)"}
         </div>
         {note.map((n) => {
-          return <Noteitem key={n._id} updateNote={updateNote} notes={n} />;
+          return (
+            <Noteitem
+              key={n._id}
+              showAlert={showAlert}
+              updateNote={updateNote}
+              notes={n}
+            />
+          );
         })}
       </div>
     </>
