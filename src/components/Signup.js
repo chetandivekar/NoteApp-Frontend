@@ -2,17 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   let navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/api/auth/loginUser", {
+    const response = await fetch("http://localhost:5000/api/auth/createUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        name: credentials.name,
         email: credentials.email,
         password: credentials.password,
       }),
@@ -40,6 +45,8 @@ export default function Signup() {
           </label>
           <input
             type="text"
+            required
+            minLength={3}
             onChange={onChange}
             name="name"
             className="form-control"
@@ -53,6 +60,8 @@ export default function Signup() {
           </label>
           <input
             type="email"
+            required
+            minLength={5}
             onChange={onChange}
             name="email"
             className="form-control"
@@ -66,6 +75,8 @@ export default function Signup() {
           </label>
           <input
             type="password"
+            required
+            minLength={5}
             onChange={onChange}
             name="password"
             className="form-control"
@@ -78,6 +89,8 @@ export default function Signup() {
           </label>
           <input
             type="password"
+            required
+            minLength={5}
             onChange={onChange}
             name="cpassword"
             className="form-control"
